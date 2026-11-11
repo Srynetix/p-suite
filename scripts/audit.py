@@ -97,9 +97,8 @@ class Audit:
 
     def exists(self, rel: str) -> bool:
         # Case-sensitive, whatever the file system: `Justfile` is not `justfile`.
-        return rel in self.tracked or (self.root / rel).is_file() and rel in os.listdir(
-            self.root / Path(rel).parent
-        )
+        path = self.root / rel
+        return rel in self.tracked or (path.is_file() and path.name in os.listdir(path.parent))
 
     def read(self, rel: str) -> str:
         try:
@@ -249,7 +248,8 @@ def check_readme(a: Audit) -> str | None:
     a.should(s, "The header has shields.io badges", "img.shields.io" in head)
     a.should(s, "The header's licence badge says MIT OR Apache-2.0",
              re.search(r"img\.shields\.io/badge/[Ll]icen[sc]e[^)\"]*MIT[_ %20]*OR[_ %20]*Apache", head))
-    a.should(s, "A screenshot follows the header", re.search(r"!\[[^\]]+\]\(docs/screenshots/", text))
+    a.should(s, "A screenshot follows the header",
+             re.search(r"!\[[^\]]+\]\(docs/screenshots/|<img[^>]+src=\"docs/screenshots/", text))
 
     positions, missing = [], []
     for h in README_SECTIONS:
@@ -273,8 +273,11 @@ def check_gate(a: Audit):
     m = re.search(r"^ci\b[^\n]*\n((?:[ \t]+.*\n?|\n)*)", text, re.M)
     a.should(s, "`just ci` ends by printing “✓ all checks passed”",
              m and "all checks passed" in m.group(1))
+    recipes = just_dump(a) or {}
+    ci = recipes.get("ci", {})
+    ci_deps = {d["recipe"] for d in ci.get("dependencies", [])}
     a.must(s, "`just ci` checks the commits (scripts/check-commits.sh)",
-           m and "check-commits" in m.group(1))
+           (m and "check-commits" in m.group(1)) or "check-commits" in ci_deps)
     workflows = [f for f in a.tracked if f.startswith(".github/workflows/")]
     a.should(s, "No hosted CI duplicates the gate (ADR 0002)", not workflows, workflows)
 
