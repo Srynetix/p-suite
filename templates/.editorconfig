@@ -1,0 +1,29 @@
+# What the files already do, written down so an editor does it too. Each language's own
+# formatter (cargo fmt, Prettier, swift-format) has the last word; this is for everything none
+# of them formats, and for the editor before any has run. From p-suite (templates/.editorconfig).
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{ts,js,mjs,svelte,css,sh}]
+indent_style = tab
+
+[*.{rs,toml,py,swift}]
+indent_style = space
+indent_size = 4
+
+[justfile]
+indent_style = space
+indent_size = 4
+
+[*.{json,webmanifest,html,yaml,yml,plist}]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

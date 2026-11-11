@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
+#
+# Everything <<Name>> can be asked to do. `just ci` is the gate: <<what it holds, in one
+# line>>, ordered so the fastest thing that can fail, fails first.
+#
+# The recipes down to `release` exist in every app of the P suite, with the same meaning
+# (p-suite, SUITE.md § 4). Add what this app needs beside them; do not rename them.
+# Replace every <<…>> (not {{…}}, which is just's own syntax) and this paragraph.
+
+set dotenv-load
+
+# List the recipes.
+default:
+    @just --list --unsorted
+
+# ---------------------------------------------------------------- development
+
+# What this machine is missing.
+doctor:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    missing=0
+    for tool in <<tools, e.g. "cargo node pnpm minisign gh">>; do
+        if command -v "$tool" > /dev/null 2>&1; then
+            printf '  %-12s %s\n' "$tool" "$($tool --version 2>&1 | head -1)"
+        else
+            printf '  %-12s MISSING\n' "$tool"
+            missing=1
+        fi
+    done
+    if [ "$missing" -ne 0 ]; then
+        echo
+        echo "  Install the missing tools before trusting 'just ci'."
+        exit 1
+    fi
+    echo
+    echo "  ✓ toolchain complete"
+
+# Install the dependencies.
+install:
+    <<e.g. pnpm install>>
+
+# Run the app from source.
+dev:
+    <<e.g. pnpm tauri dev>>
+
+# Format everything in place.
+fmt:
+    <<e.g. cargo fmt --all && pnpm prettier --write .>>
+
+# ---------------------------------------------------------------- checks
+
+# The fast static checks: format, lint, types.
+check:
+    <<e.g. cargo fmt --all --check && cargo clippy --workspace -- -D warnings && pnpm check>>
+
+# Every test.
+test:
+    <<e.g. cargo test --workspace && pnpm test>>
+
+# The gate: everything a machine can check, before every commit meant to stay.
+ci: check test
+    scripts/check-commits.sh
+    <<the slower checks: licences, SPDX headers, a build, a smoke run>>
+    @echo "\n  ✓ all checks passed"
+
+# ---------------------------------------------------------------- packaging
+
+# A release build of the app, for this machine.
+build:
+    <<e.g. pnpm tauri build>>
+
+# ---------------------------------------------------------------- release
+
+# The notes of the next release, in Markdown.
+changelog *args:
+    scripts/changelog.sh {{args}}
+
+# Publish a release: `just release --dry-run` first.
+release *args:
+    scripts/release.sh {{args}}
