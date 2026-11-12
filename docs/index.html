@@ -1,0 +1,277 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT OR Apache-2.0 -->
+<!-- The P suite's home page, served by GitHub Pages from docs/. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The P suite</title>
+<meta name="description" content="Prism, Pastille and Pavé: apps that start with a P, built almost entirely by AI coding agents and made the same way.">
+<meta property="og:title" content="The P suite">
+<meta property="og:description" content="Prism, Pastille and Pavé: apps that start with a P, built almost entirely by AI coding agents and made the same way.">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of three app chapters, each tinted by its own stop of the logo's gradient
+   (Prism orange, Pastille violet, Pavé blue), then the shared way they are made. Dark-first. */
+:root {
+  --bg: #110f20;
+  --surface: #1a1730;
+  --line: #2c2849;
+  --fg: #eeedf7;
+  --muted: #a6a2c2;
+  --prism: #fb8a3c;
+  --pastille: #b77cf8;
+  --pave: #5b9bf8;
+  --grad: linear-gradient(135deg, #f97316 0%, #a855f7 50%, #3b82f6 100%);
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f7f6fc; --surface: #ffffff; --line: #e1ddf0; --fg: #17142b; --muted: #5c5878;
+    --prism: #c2470e; --pastille: #8a3fd8; --pave: #2563eb; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f7f6fc; --surface: #ffffff; --line: #e1ddf0; --fg: #17142b; --muted: #5c5878;
+  --prism: #c2470e; --pastille: #8a3fd8; --pave: #2563eb; color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+img { max-width: 100%; }
+body {
+  margin: 0;
+  background: var(--bg); color: var(--fg);
+  font: 16px/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--pastille); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+p { margin: 0; }
+.mono { font-family: var(--mono); font-size: 0.86em; }
+
+/* ---- hero */
+.hero { padding-block: 72px 56px; display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: center; }
+.hero svg { width: 152px; height: 152px; display: block; filter: drop-shadow(0 18px 40px rgba(168, 85, 247, .28)); }
+.eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.hero h1 { font-size: clamp(40px, 7vw, 76px); line-height: 1; font-weight: 800; margin-top: 10px; }
+.hero h1 .p { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero .lede { font-size: clamp(17px, 2.1vw, 20px); color: var(--muted); max-width: 40em; margin-top: 18px; }
+.hero .lede b { color: var(--fg); font-weight: 600; }
+.roster { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.roster a {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px;
+  border: 1px solid var(--line); border-radius: 999px; text-decoration: none; font-weight: 500;
+}
+.roster a:hover { border-color: var(--muted); }
+.roster img { width: 26px; height: 26px; border-radius: 7px; }
+
+/* ---- app chapters */
+.app {
+  --c: var(--fg);
+  display: grid; grid-template-columns: 200px 1fr; gap: 40px;
+  padding-block: 56px; border-top: 1px solid var(--line);
+}
+.app.prism { --c: var(--prism); }
+.app.pastille { --c: var(--pastille); }
+.app.pave { --c: var(--pave); }
+.side { display: flex; flex-direction: column; gap: 16px; }
+.side img { width: 112px; height: 112px; border-radius: 26px; }
+.meta { display: flex; flex-direction: column; gap: 4px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.meta dt { color: var(--c); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-top: 8px; }
+.meta dd { margin: 0; }
+.main { min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+.app h2 { font-size: clamp(34px, 5vw, 52px); font-weight: 800; line-height: 1; color: var(--c); }
+.app .pitch { font-family: var(--display); font-weight: 500; font-size: clamp(20px, 2.6vw, 26px); line-height: 1.3; max-width: 30em; }
+.app .problem { color: var(--muted); max-width: 62ch; }
+.features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.features li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.features h3 { font-size: 16.5px; font-weight: 700; letter-spacing: -0.01em; }
+.features p { font-size: 14.5px; color: var(--muted); margin-top: 6px; }
+.cta { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--c); text-decoration: none; align-self: flex-start; }
+.cta:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---- next app */
+.next {
+  border-top: 1px solid var(--line); padding-block: 48px;
+  display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: center;
+}
+.slot {
+  width: 112px; height: 112px; border-radius: 26px; border: 2px dashed var(--line);
+  display: grid; place-items: center; font: 800 54px/1 var(--display); color: var(--line);
+}
+.next h2 { font-size: 26px; font-weight: 700; }
+.next p { color: var(--muted); margin-top: 6px; max-width: 58ch; }
+
+/* ---- the shared way */
+.made { border-top: 1px solid var(--line); padding-block: 64px; display: grid; gap: 32px; }
+.made header { max-width: 40em; display: grid; gap: 12px; }
+.made h2 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 800; line-height: 1.05; }
+.made header p { color: var(--muted); }
+.made-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.term {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow-x: auto;
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.75; padding: 18px 20px;
+}
+.term .bar { display: flex; gap: 6px; margin-bottom: 12px; }
+.term .bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.term table { border-collapse: collapse; white-space: nowrap; }
+.term td { padding: 0 18px 0 0; vertical-align: top; }
+.term td:first-child { color: var(--fg); }
+.term td:last-child { color: var(--muted); padding-right: 0; }
+.term .prompt { color: var(--pastille); }
+.rules { display: grid; gap: 18px; margin: 0; padding: 0; list-style: none; }
+.rules li { display: grid; gap: 4px; }
+.rules b { font-family: var(--display); font-size: 18px; font-weight: 700; }
+.rules span { color: var(--muted); font-size: 15px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+@media (max-width: 860px) {
+  .features { grid-template-columns: minmax(0, 1fr); }
+  .made-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 40px 40px; }
+  .hero svg { width: 96px; height: 96px; }
+  .app, .next { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .side { flex-direction: row; align-items: flex-start; gap: 20px; }
+  .side img, .slot { width: 80px; height: 80px; border-radius: 19px; flex: none; }
+  .slot { font-size: 38px; }
+  .meta dt:first-child { margin-top: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <svg viewBox="0 0 1024 1024" role="img" aria-label="The P suite's logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f97316"/><stop offset=".5" stop-color="#a855f7"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs>
+      <rect width="1024" height="1024" rx="230" fill="#161327"/>
+      <path fill="url(#lg)" fill-rule="evenodd" d="M 250 180 H 560 A 250 250 0 0 1 560 680 H 440 V 844 H 250 Z M 440 340 V 520 H 540 A 90 90 0 0 0 540 340 Z"/>
+    </svg>
+    <div>
+      <p class="eyebrow">Free and open source · MIT OR Apache-2.0</p>
+      <h1>The <span class="p">P</span> suite</h1>
+      <p class="lede">Apps that start with a P, each solving one real problem, <b>built almost entirely by AI coding agents</b> under one author's direction. Every app is made the same way, from the first command to the signed release.</p>
+      <nav class="roster" aria-label="The apps">
+        <a href="#prism"><img src="images/prism.png" alt="">Prism</a>
+        <a href="#pastille"><img src="images/pastille.png" alt="">Pastille</a>
+        <a href="#pave"><img src="images/pave.png" alt="">Pavé</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="app prism" id="prism" aria-labelledby="prism-h">
+    <div class="side">
+      <img src="images/prism.png" alt="Prism's icon: a prism splitting a beam of light">
+      <dl class="meta">
+        <dt>Runs on</dt><dd>macOS · Linux · Windows</dd>
+        <dt>Built with</dt><dd>Rust · Tauri 2 · Svelte 5</dd>
+      </dl>
+    </div>
+    <div class="main">
+      <h2 id="prism-h">Prism</h2>
+      <p class="pitch">Your merge requests, tickets, pipelines, clusters and AI agents in one local, real-time dashboard, sorted by what needs you.</p>
+      <p class="problem">A developer's day is spread over a dozen tabs: the forge, the tracker, CI, the cluster, the calendar, the agents at work. Prism reads them all, live, and answers one question first: what needs me now?</p>
+      <ul class="features">
+        <li><h3>One window, every source</h3><p>GitLab or GitHub, ClickUp, Jira or Obsidian, Kubernetes and ArgoCD, your calendar and mail, Claude Code sessions.</p></li>
+        <li><h3>Drift, caught for you</h3><p>A red pipeline on your branch, a ticket still “doing” while its MR is in review, an agent stuck on a permission: all in Alerts, most severe first.</p></li>
+        <li><h3>Local, by design</h3><p>No account and no cloud. Prism reuses the access you already have, <span class="mono">gh</span>, <span class="mono">glab</span>, your kubeconfig and keychain.</p></li>
+      </ul>
+      <a class="cta" href="https://github.com/Srynetix/prism">Prism on GitHub →</a>
+    </div>
+  </section>
+
+  <section class="app pastille" id="pastille" aria-labelledby="pastille-h">
+    <div class="side">
+      <img src="images/pastille.png" alt="Pastille's icon: a lightning bolt">
+      <dl class="meta">
+        <dt>Runs on</dt><dd>Browser · macOS · Windows · Linux, offline too</dd>
+        <dt>Built with</dt><dd>Rust · WebAssembly · Svelte 5</dd>
+      </dl>
+    </div>
+    <div class="main">
+      <h2 id="pastille-h">Pastille</h2>
+      <p class="pitch">An electronics simulator for people who have never built a circuit, and the bridge from a circuit that works on screen to one that works on your desk.</p>
+      <p class="problem">Most circuit simulators are built for people who already know what a node voltage is. Pastille is for the person who just bought a starter kit and wonders why the LED did not light up.</p>
+      <ul class="features">
+        <li><h3>See electricity move</h3><p>Dots flow with the current, every wire takes the colour of its voltage, from blue at 0 V to pink at the supply.</p></li>
+        <li><h3>Mistakes, explained</h3><p>An LED the wrong way round or a short across the battery: Pastille says what would happen on a real bench, and how to fix it.</p></li>
+        <li><h3>56 parts and a real Arduino</h3><p>From a battery to a 555 and a shift register, plus an Arduino Uno that runs a real compiled sketch. 111 examples to start from.</p></li>
+      </ul>
+      <a class="cta" href="https://github.com/Srynetix/pastille">Pastille on GitHub →</a>
+    </div>
+  </section>
+
+  <section class="app pave" id="pave" aria-labelledby="pave-h">
+    <div class="side">
+      <img src="images/pave.png" alt="Pavé's icon: a window beside two paving stones">
+      <dl class="meta">
+        <dt>Runs on</dt><dd>macOS 15 or later</dd>
+        <dt>Built with</dt><dd>Swift 6 · SwiftUI</dd>
+      </dl>
+    </div>
+    <div class="main">
+      <h2 id="pave-h">Pavé</h2>
+      <p class="pitch">Pave the way for your windows. A window manager for macOS that brings the switcher, snapping, taskbar and workspaces you miss.</p>
+      <p class="problem">Switched to a Mac after years on Windows or Linux? Your hands still reach for Alt+Tab and throw windows against the screen edges. Pavé gives them what they expect, without fighting the Mac you chose.</p>
+      <ul class="features">
+        <li><h3>Every window, one keystroke away</h3><p><span class="mono">⌘Tab</span> shows every window, not every app, with live previews. Type to search.</p></li>
+        <li><h3>Snap, zones and tiling</h3><p>Halves and quarters on the arrows, FancyZones-style layouts for wide screens, tiling when you want it.</p></li>
+        <li><h3>A real taskbar and workspaces</h3><p>A taskbar with hover previews, and workspaces that respect each of your screens.</p></li>
+      </ul>
+      <a class="cta" href="https://github.com/Srynetix/pave">Pavé on GitHub →</a>
+    </div>
+  </section>
+
+  <section class="next" aria-labelledby="next-h">
+    <div class="slot" aria-hidden="true">P</div>
+    <div>
+      <h2 id="next-h">The next P</h2>
+      <p>The suite grows one app at a time. A new one starts from the suite's templates and passes <span class="mono">just audit</span> before its first release.</p>
+    </div>
+  </section>
+
+  <section class="made" aria-labelledby="made-h">
+    <header>
+      <p class="eyebrow">How they are made</p>
+      <h2 id="made-h">Different apps, one way of making them</h2>
+      <p>The apps share no code. They share how they are built, so an agent that has worked on one finds its way around the others. The conventions are written down in <span class="mono">SUITE.md</span> and checked by an audit.</p>
+    </header>
+    <div class="made-grid">
+      <div class="term" role="figure" aria-label="The commands every app answers to">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <table>
+          <tr><td><span class="prompt">$</span> just doctor</td><td># what this machine is missing</td></tr>
+          <tr><td><span class="prompt">$</span> just dev</td><td># build it and run it</td></tr>
+          <tr><td><span class="prompt">$</span> just fmt</td><td># format the sources</td></tr>
+          <tr><td><span class="prompt">$</span> just ci</td><td># the gate, before every commit</td></tr>
+          <tr><td><span class="prompt">$</span> just changelog</td><td># what changed since the last tag</td></tr>
+          <tr><td><span class="prompt">$</span> just release</td><td># a signed release on GitHub</td></tr>
+        </table>
+      </div>
+      <ul class="rules">
+        <li><b>The gate is local</b><span>No hosted pipeline: <span class="mono">just ci</span> checks the commits, formatting, lints and tests on the author's machine.</span></li>
+        <li><b>Every release is signed</b><span>Each file ships with its <span class="mono">.sha256</span> and a minisign <span class="mono">.minisig</span>, under tags like <span class="mono">pave-v0.6.0</span>.</span></li>
+        <li><b>Decisions are written down</b><span>Each app keeps its decision records in <span class="mono">docs/adrs</span>, and <span class="mono">AGENTS.md</span> tells an agent how to work on it.</span></li>
+        <li><b>Free to use and to fork</b><span>Every app is under MIT OR Apache-2.0, with Conventional Commits that become the release notes.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>The P suite, by Srynetix</span>
+    <a href="https://github.com/Srynetix/p-suite">Conventions and templates on GitHub →</a>
+  </footer>
+</div>
+</body>
+</html>
