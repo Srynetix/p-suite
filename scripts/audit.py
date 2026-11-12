@@ -35,12 +35,14 @@ REQUIRED_FILES = [
     "docs/adrs/README.md", "scripts/release.sh", "scripts/changelog.sh",
     "scripts/check-commits.sh",
 ]
+DEV_DOCS = ["docs/dev/README.md", "docs/dev/architecture.md", "docs/dev/patterns.md"]
 REQUIRED_RECIPES = [
     "default", "doctor", "install", "dev", "fmt", "check", "test", "ci",
     "build", "changelog", "release",
 ]
-README_SECTIONS = [  # in this order (SUITE.md § 6); Privacy and Documentation are optional
-    "## What's inside", "## Getting started", "### Build it", "## How it was made",
+README_SECTIONS = [  # in this order (SUITE.md § 6); Privacy is optional
+    "## What's inside", "## Getting started", "### Build it", "## Documentation",
+    "## How it was made",
     "## Contributing", "## License",
 ]
 AGENTS_SECTIONS = ["## Commands", "## Done means", "## Rules", "## Ask before"]
@@ -150,7 +152,7 @@ def check_repository(a: Audit):
     a.must(s, "`.claude/` is not ignored as a whole (only its local files)", not whole, whole)
 
     leftovers = []
-    for f in ["README.md", "AGENTS.md", "CONTRIBUTING.md", "SECURITY.md"]:
+    for f in ["README.md", "AGENTS.md", "CONTRIBUTING.md", "SECURITY.md", *DEV_DOCS]:
         for i, line in enumerate(a.read(f).splitlines(), 1):
             if re.search(r"\{\{[^}]*\}\}", line):
                 leftovers.append(f"{f}:{i}: {line.strip()[:80]}")
@@ -369,6 +371,18 @@ def check_style(a: Audit):
            not missing, short(missing))
 
 
+def check_dev_docs(a: Audit):
+    s = "§ 13 Developer documentation"
+    missing = [f for f in DEV_DOCS if not a.exists(f)]
+    a.must(s, "docs/dev/ has its README, architecture and patterns", not missing, missing)
+    if a.exists("docs/dev/architecture.md"):
+        a.should(s, "architecture.md says where the app departs from § 12",
+                 re.search(r"^## Departures", a.read("docs/dev/architecture.md"), re.M))
+    docs = section_body(a.read("README.md"), "## Documentation")
+    a.should(s, "The README's Documentation links docs/dev/", "docs/dev/" in docs)
+    a.should(s, "AGENTS.md points to docs/dev/", "docs/dev/" in a.read("AGENTS.md"))
+
+
 # ------------------------------------------------------------------------------------ helpers
 
 
@@ -480,6 +494,7 @@ def main():
     check_commits(a, args.commits)
     check_licence(a)
     check_style(a)
+    check_dev_docs(a)
 
     (print_markdown if args.markdown else print_text)(a, name)
     sys.exit(1 if any(not ch.ok and ch.level == "must" for ch in a.checks) else 0)

@@ -262,7 +262,8 @@ footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var
       <ul class="rules">
         <li><b>The gate is local</b><span>No hosted pipeline: <span class="mono">just ci</span> checks the commits, formatting, lints and tests on the author's machine.</span></li>
         <li><b>Every release is signed</b><span>Each file ships with its <span class="mono">.sha256</span> and a minisign <span class="mono">.minisig</span>, under tags like <span class="mono">pave-v0.6.0</span>.</span></li>
-        <li><b>Decisions are written down</b><span>Each app keeps its decision records in <span class="mono">docs/adrs</span>, and <span class="mono">AGENTS.md</span> tells an agent how to work on it.</span></li>
+        <li><b>Code a person can take over</b><span>Agents write it, but it follows Clean Code and Clean Architecture: a core that knows nothing of the platform, comments only where they say why.</span></li>
+        <li><b>Decisions and design are written down</b><span>Each app documents how it is built in <span class="mono">docs/dev</span>, records why in <span class="mono">docs/adrs</span>, and <span class="mono">AGENTS.md</span> tells an agent how to work on it.</span></li>
         <li><b>Free to use and to fork</b><span>Every app is under MIT OR Apache-2.0, with Conventional Commits that become the release notes.</span></li>
       </ul>
     </div>

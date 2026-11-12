@@ -85,8 +85,11 @@ just release     # a signed release on GitHub
   tests on the author's machine ([ADR 0002](docs/adrs/0002-the-gate-stays-local.md)).
 - **Every release is signed.** Each file ships with its `.sha256` and a minisign `.minisig`,
   under tags like `pave-v0.6.0` ([ADR 0003](docs/adrs/0003-every-release-signed.md)).
-- **Decisions are written down.** Each app keeps its decision records in `docs/adrs`, and
-  `AGENTS.md` tells an agent how to work on it.
+- **Code a person can take over.** Agents write it, but it follows Clean Code and Clean
+  Architecture: a core that knows nothing of the platform, comments only where they say why
+  ([ADR 0004](docs/adrs/0004-code-a-person-can-take-over.md)).
+- **Decisions and design are written down.** Each app documents how it is built in `docs/dev`,
+  records why in `docs/adrs`, and `AGENTS.md` tells an agent how to work on it.
 - **Free to use and to fork.** Every app is under MIT OR Apache-2.0
   ([ADR 0001](docs/adrs/0001-dual-licence.md)), with Conventional Commits that become the release
   notes.

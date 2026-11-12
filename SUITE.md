@@ -43,6 +43,7 @@ Every app **must** have, at its root:
 | `justfile` | Every command (§4) | [justfile](templates/justfile) |
 | `.editorconfig` | What every editor does to every file | [.editorconfig](templates/.editorconfig) |
 | `docs/adrs/` | Every technical decision (§5) | [docs/adrs/](templates/docs/adrs) |
+| `docs/dev/` | How the code is built: architecture, patterns (§13) | [docs/dev/](templates/docs/dev) |
 | `docs/screenshots/` | What the README shows | — |
 | `scripts/release.sh`, `scripts/changelog.sh` | The release (§8) | — |
 | `scripts/check-commits.sh` | Conventional Commits, checked (§8) | [check-commits.sh](templates/scripts/check-commits.sh) |
@@ -62,8 +63,8 @@ The code is written by agents; the contract they work under is versioned with it
   nothing, so every agent reads the same rules.
 - It says, in this order: what the app is in two lines, where things are, the commands, the
   definition of done (§7), the rules, and what an agent must ask before doing.
-- **It is short.** What a reader of the code would need anyway goes in the README, the ADRs or a
-  comment; `AGENTS.md` points to it rather than repeating it.
+- **It is short.** What a reader of the code would need anyway goes in the README, the ADRs,
+  `docs/dev/` or a comment; `AGENTS.md` points to it rather than repeating it.
 - **A mistake an agent made twice becomes a rule** in `AGENTS.md`, or better a check in
   `just ci`. A rule a check can enforce belongs in the check.
 - The author directs, reviews, tests on real machines and decides what ships. An agent never
@@ -129,7 +130,8 @@ Every README follows [the template](templates/README.md):
    `just dev`.
 6. `## Privacy`, when the app touches anything personal: what it reads, what leaves the
    machine, and that nothing else does.
-7. `## Documentation`, when there is more than the README.
+7. `## Documentation`: the developer documentation (`docs/dev/`, §13), the decisions
+   (`docs/adrs/`), and any user guide.
 8. `## How it was made`: the suite's paragraph, word for word (§10).
 9. `## Contributing`: two lines pointing at `CONTRIBUTING.md` and `SECURITY.md`.
 10. `## License`.
@@ -152,8 +154,9 @@ the built app.
 
 - `just ci` passed, and the commit message says so if it could not be run, and why;
 - the change comes with its tests; a fixed bug with a test that fails without the fix;
+- the code follows §12: an agent leaves it as a person would want to take it over;
 - a decision taken on the way has its ADR;
-- the README and the docs say what is now true;
+- the README and `docs/dev/` say what is now true (§13);
 - the commit subject is one a user can read in the release notes (§8).
 
 ## 8. Commits and releases
@@ -224,12 +227,92 @@ Every README ends its presentation with this paragraph, the name replaced:
 ## 11. Style
 
 - Everything in a repository is written in **English**: code, comments, docs, commits.
-- Prose is plain: short sentences, the user's words, what and why before how. A comment says
-  why the code is the way it is, not what it does.
+- Prose is plain: short sentences, the user's words, what and why before how. What a comment
+  may say is in §12.
 - Source files start with `SPDX-License-Identifier: MIT OR Apache-2.0` in their first three
   lines, checked by `just ci`.
 - Each language keeps its own formatter's defaults (`cargo fmt`, Prettier, `swift-format`);
   `.editorconfig` covers the rest.
+
+## 12. Code
+
+Agents write the code, but it **must** read as if a careful person had, so that a person can
+take any app over by hand tomorrow ([ADR 0004](docs/adrs/0004-code-a-person-can-take-over.md)).
+The references are *Clean Code* and *Clean Architecture* (Robert C. Martin), applied as far as
+the app's size and platform allow: where an app departs, `docs/dev/architecture.md` says where
+and why.
+
+**Architecture.** The rules of the app live apart from what they run on.
+
+- **A core holds the domain**: its types, its rules, its use cases. It knows nothing of the UI
+  framework, the operating system, the network, the file system or the clock; it is given them
+  through interfaces it defines (ports), implemented at the edges (adapters).
+- **Dependencies point inward.** The UI and the adapters depend on the core, never the
+  reverse. The boundary is one the compiler enforces wherever the language allows it: a
+  separate crate, Swift target or package, rather than a folder and good intentions; a check
+  in `just ci` where it does not (Pastille's `boundary`).
+- **The UI holds no rule.** It shows the core's state and passes on what the user did. A rule
+  found in a view moves to the core, with its test.
+- **Platform code is confined.** Private or unsafe APIs, FFI and generated bindings live in one
+  named place each (Pavé's `Private.swift`), behind an interface the rest of the code uses.
+- **The core is tested without the platform**: its tests need no window, no device, no network.
+- Layers are earned, not drawn in advance: a small app may have only a core and a shell. What
+  matters is the direction of the dependencies, not their number.
+
+**Clean code.**
+
+- **Names say what a thing is in the domain's words**, the ones the README uses. No
+  abbreviation the domain does not use, no `data`, `info`, `manager`, `helper`, `utils`.
+- **A function does one thing, at one level of abstraction.** A function whose parts need
+  comments to be told apart is several functions. Few parameters: past three, an argument
+  type.
+- **Effects are visible.** A function's name says what it changes; the core prefers pure
+  functions, and state changes in few, known places.
+- **Errors are handled or passed on, never swallowed.** No empty `catch`, no silent fallback, no
+  `unwrap` outside tests and proven invariants; an error says what failed and with what.
+- **No magic values**: a number or a string that means something has a name.
+- **One piece of knowledge, one place.** Code repeated by chance can stay; a rule repeated is
+  one rule, extracted.
+- **Nothing dead.** No unused code, parameter, flag or file; no code commented out. Git keeps
+  history.
+- **Tests read like specifications**: one behaviour each, named after it, arranged in the
+  order given, when, then.
+- The linters run as strict as the ecosystem allows, warnings as errors, in `just check`.
+
+**Comments.** Only those that tell a reader what the code cannot.
+
+- **A comment says why**: a constraint from outside (an OS quirk, a datasheet, a protocol), a
+  choice that looks wrong and is not, a workaround with its cause, the ADR behind the code.
+- **No comment repeats the code**, narrates its history ("now uses", "changed to", "fixed"),
+  or speaks to a reviewer. History is in git, explanation in `docs/dev/`.
+- **A doc comment documents a contract**, on what crosses a module boundary: what it
+  promises, what it needs, what it throws. Not on every private function.
+- **No `TODO` without an issue** it links to.
+- A comment that grows past a few lines is documentation: it moves to `docs/dev/`, and the
+  comment points there.
+
+## 13. Developer documentation
+
+The code says how; the comments say why, briefly; **`docs/dev/` says how the whole fits
+together**, so that a person can find their way without an agent. Every app **must** have:
+
+| File | What it holds |
+|---|---|
+| `docs/dev/README.md` | Where to start: what to read first, the domain's vocabulary, the map of the documents |
+| `docs/dev/architecture.md` | The layers and the dependency rule as this app applies them; every module, its role and what it depends on; the main flows, as diagrams; where the platform code lives; where the app departs from §12, and why |
+| `docs/dev/patterns.md` | Every pattern the code uses (a state machine, a command bus, an adapter, an observer…): the problem it solves here, where it lives, how to add one more case, what to avoid |
+
+More guides as the app needs them, each listed in `docs/dev/README.md`: testing, a subsystem,
+a file format, the release.
+
+- **`docs/dev/` describes what is; `docs/adrs/` records why it was chosen.** A document links
+  the ADR behind a choice rather than repeating it; an ADR is never edited to describe the
+  code as it has become.
+- It is **written for a developer who knows the language but not the app**, and names files
+  and types with links to them.
+- **It is true in every commit**: a change to the structure or to a pattern updates it in the
+  same commit (§7). A document that no longer matches the code is a bug.
+- Diagrams are Mermaid, in the Markdown, so they are diffed and kept up to date like text.
 
 ---
 

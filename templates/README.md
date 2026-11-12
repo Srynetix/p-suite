@@ -62,10 +62,9 @@ just dev      # {{what it runs}}
 
 ## Documentation
 
-<!-- Optional: when there is more than this README. -->
-
-- [{{Guide}}](docs/guide.md) — {{what it covers}}
+- [Developing {{Name}}](docs/dev/README.md) — how the code is built: architecture, patterns
 - [Decisions](docs/adrs/README.md) — every technical choice, and what it was chosen against
+- {{[A user guide](docs/guide.md) — what it covers; or delete this line}}
 
 ## How it was made
 
