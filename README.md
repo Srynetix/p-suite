@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.svg" width="128" alt="The P suite's logo"></p>
+
 # p-suite
 
 The conventions shared by the apps of the P suite, and the files that carry them:
