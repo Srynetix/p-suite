@@ -68,7 +68,7 @@ just dev      # {{what it runs}}
 
 ## How it was made
 
-{{Name}} was designed, tested and used every day by its author, with the help of an AI coding
+{{Name}} was designed, tested and used by its author, with the help of an AI coding
 agent ([Claude Code](https://claude.com/claude-code)). The agent wrote most of the code and the
 tests under the author's direction; the design decisions, the testing on real machines and the
 choice of what ships remain the author's. It is part of the
