@@ -49,7 +49,9 @@ AGENTS_SECTIONS = ["## Commands", "## Done means", "## Rules", "## Ask before"]
 CONVENTIONAL = re.compile(
     r"^(feat|fix|perf|docs|refactor|test|chore|build|ci|style|revert)(\([^)]+\))?!?: \S"
 )
-SOURCE_EXT = {".rs", ".ts", ".js", ".mjs", ".cjs", ".svelte", ".swift", ".sh", ".py", ".css"}
+SOURCE_EXT = {
+    ".rs", ".ts", ".js", ".mjs", ".cjs", ".svelte", ".swift", ".c", ".h", ".sh", ".py", ".css",
+}
 NOT_SOURCE = re.compile(
     r"(^|/)(node_modules|dist|dist-[^/]*|build|target|vendor|\.svelte-kit|gen|generated)/"
     r"|\.d\.ts$|\.min\.(js|css)$"
